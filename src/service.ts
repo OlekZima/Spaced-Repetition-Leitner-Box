@@ -2,13 +2,7 @@ import { App, TFile } from "obsidian";
 import { LeitnerCard, LeitnerStats } from "./types";
 
 const LEITNER_INTERVALS: Record<number, number> = {
-    1: 1,
-    2: 2,
-    3: 4,
-    4: 7,
-    5: 14,
-    6: 30,
-    7: 60,
+    1: 1, 2: 2, 3: 4, 4: 7, 5: 14, 6: 30, 7: 60,
 };
 
 interface CardMeta {
@@ -17,42 +11,51 @@ interface CardMeta {
 }
 
 export class LeitnerService {
-    constructor(private app: App) { }
+    constructor(private app: App) {}
 
     parseCards(content: string, file: TFile): LeitnerCard[] {
         const cards: LeitnerCard[] = [];
         let index = 0;
-
-        const CARD_REGEX = /(^|\n)(?<question>[^\n]+?)\n\?\n(?<answer>[\s\S]+?)(?:\n(?<meta><!--\s*leitner:\s*\{[\s\S]*?\}\s*-->))?(?=\n\s*\n|$)/g;
+        
+        const CARD_REGEX = /(^|\n)([^\n]+?)\n\?\n([\s\S]+?)(?:\n(<!--\s*leitner:\s*\{[\s\S]*?\}\s*-->))?(?=\n\s*\n|$)/g;
 
         for (const match of content.matchAll(CARD_REGEX)) {
-            const groups = match.groups!;
+            const questionRaw = match[2];
+            const answerRaw = match[3];
+            const metaRaw = match[4];
+
+            if (!questionRaw || !answerRaw) {
+                continue;
+            }
+
             let level = 1;
             let lastReviewed = new Date(0);
 
-            if (groups.meta) {
+            if (metaRaw) {
                 try {
-                    const metaJson = groups.meta
+                    const metaJson = metaRaw
                         .replace(/<!--\s*leitner:/, "")
                         .replace(/-->/, "")
                         .trim();
+                    
                     const meta = JSON.parse(metaJson) as CardMeta;
+                    
                     level = meta.level ?? 1;
                     lastReviewed = new Date(meta.last);
                 } catch (e) {
-                    console.error(`Leitner: JSON error in file ${file.path}`, e);
+                    console.error(`Leitner: Błąd JSON w pliku ${file.path}`, e);
                 }
             }
 
-            const originalRaw = match[0].startsWith('\n') && match.index !== 0
-                ? match[0].substring(1)
+            const originalRaw = match[0].startsWith('\n') && match.index !== 0 
+                ? match[0].substring(1) 
                 : match[0];
 
             cards.push({
                 file,
                 index,
-                question: groups.question.trim(),
-                answer: groups.answer.trim(),
+                question: questionRaw.trim(),
+                answer: answerRaw.trim(),
                 level,
                 lastReviewed,
                 originalRaw
@@ -78,12 +81,12 @@ export class LeitnerService {
 
     async updateCardResult(card: LeitnerCard, correct: boolean): Promise<boolean> {
         const newLevel = correct ? Math.min(card.level + 1, 7) : 1;
-
-        const metaObject = {
+        
+        const metaObject: CardMeta = {
             level: newLevel,
             last: new Date().toISOString(),
         };
-
+        
         const metaComment = `<!-- leitner: ${JSON.stringify(metaObject)} -->`;
         const newBlock = `${card.question}\n?\n${card.answer}\n${metaComment}`;
 
@@ -93,7 +96,7 @@ export class LeitnerService {
             });
             return true;
         } catch (error) {
-            console.error("Leitner: File save error", error);
+            console.error("Leitner: Błąd zapisu pliku", error);
             return false;
         }
     }
