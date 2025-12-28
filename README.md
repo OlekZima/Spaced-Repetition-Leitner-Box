@@ -1,6 +1,6 @@
 # Spaced Repetition Leitner Box Plugin
 
-Plugin for Obsidian that implements a spaced repetition system based on the [Leitner method](https://ncase.me/remember/). It allows users to create flashcards and review them according to the Leitner box system.
+Want to remember something for live-ish? Try spaced repetition system based on the [Leitner method](https://ncase.me/remember/). It allows users to create flashcards and review them according to the Leitner box system.
 
 ## Configuration
 
