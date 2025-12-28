@@ -19,7 +19,7 @@ export class LeitnerSettingTab extends PluginSettingTab {
 			.setDesc(t("SETTING_LANG_DESC"))
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOption("auto", "auto")
+					.addOption("auto", "Auto")
 					.addOption("en", "English")
 					.addOption("pl", "Polski")
 					.addOption("uk", "Українська")

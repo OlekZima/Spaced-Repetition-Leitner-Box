@@ -11,6 +11,11 @@ const LEITNER_INTERVALS: Record<number, number> = {
     7: 60,
 };
 
+interface CardMeta {
+    level?: number;
+    last: string;
+}
+
 export class LeitnerService {
     constructor(private app: App) { }
 
@@ -31,7 +36,7 @@ export class LeitnerService {
                         .replace(/<!--\s*leitner:/, "")
                         .replace(/-->/, "")
                         .trim();
-                    const meta = JSON.parse(metaJson);
+                    const meta = JSON.parse(metaJson) as CardMeta;
                     level = meta.level ?? 1;
                     lastReviewed = new Date(meta.last);
                 } catch (e) {

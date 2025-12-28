@@ -16,7 +16,7 @@ export class LeitnerStudyModal extends Modal {
     }
 
     onOpen() {
-        this.render();
+        void this.render();
     }
 
     async render() {
@@ -39,30 +39,32 @@ export class LeitnerStudyModal extends Modal {
         });
 
         const questionEl = contentEl.createDiv({ cls: "leitner-question markdown-rendered" });
-        await MarkdownRenderer.renderMarkdown(card.question, questionEl, card.file.path, this);
+        await MarkdownRenderer.render(this.app, card.question, questionEl, card.file.path, this);
 
         if (this.showAnswer) {
             contentEl.createEl("hr");
 
             const answerEl = contentEl.createDiv({ cls: "leitner-answer markdown-rendered" });
-            await MarkdownRenderer.renderMarkdown(card.answer, answerEl, card.file.path, this);
+
+            await MarkdownRenderer.render(this.app, card.answer, answerEl, card.file.path, this);
 
             const buttons = contentEl.createDiv({ style: "display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;" });
 
             const badBtn = buttons.createEl("button", { text: t("BTN_FORGOT") });
             badBtn.classList.add("mod-warning");
-            badBtn.onclick = () => this.finishCard(card, false);
+            badBtn.onclick = () => { void this.finishCard(card, false); };
+
 
             const goodBtn = buttons.createEl("button", { text: t("BTN_REMEMBER") });
             goodBtn.classList.add("mod-cta");
-            goodBtn.onclick = () => this.finishCard(card, true);
+            goodBtn.onclick = () => { void this.finishCard(card, true); };
 
         } else {
             const btnContainer = contentEl.createDiv({ style: "text-align: center; margin-top: 2rem;" });
             const showBtn = btnContainer.createEl("button", { text: t("BTN_SHOW_ANSWER") });
             showBtn.onclick = () => {
                 this.showAnswer = true;
-                this.render();
+                void this.render();
             };
         }
     }
@@ -71,7 +73,7 @@ export class LeitnerStudyModal extends Modal {
         await this.service.updateCardResult(card, correct);
         this.index++;
         this.showAnswer = false;
-        this.render();
+        void this.render();
     }
 }
 
