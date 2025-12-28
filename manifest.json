@@ -1,0 +1,10 @@
+{
+	"id": "spaced-repetition-leitner-box",
+	"name": "Spaced Repetition Leitner Box",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "A plugin that implements a spaced repetition system using the Leitner Box method for effective learning within Obsidian.",
+	"author": "Olek Zima",
+	"authorUrl": "https://github.com/OlekZima",
+	"isDesktopOnly": false
+}
