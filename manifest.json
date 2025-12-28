@@ -1,7 +1,7 @@
 {
 	"id": "spaced-repetition-leitner-box",
 	"name": "Spaced Repetition Leitner Box",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "0.15.0",
 	"description": "A plugin that implements a spaced repetition system using the Leitner Box method for effective learning.",
 	"author": "Olek Zima",
